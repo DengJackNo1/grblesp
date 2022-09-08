@@ -2,6 +2,7 @@
 .piolibdeps
 .pio
 .vscode
+.idea
 build_output
 .clang_complete
 .gcc-flags.json

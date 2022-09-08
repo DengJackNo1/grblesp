@@ -172,6 +172,8 @@ decltype(regs) regs_tmp;
 
 #define DISABLE_74HC595 // not use spi control steeper 74HC595 芯片扩充GPIO
 //#define USE_ENABLE_STEPPERS  //使用gpio15引腳控制电机使能引腳,连接到3个步进电机EN脚
+#define USE_ENABLE_SPINDLE //使用gpio15引腳作为pwm引脚,范围0-1000 M3S500 ,舵机占空比为 500/1000 = 0.5
+#define Servo // 把pwm引脚作为舵机引脚,把pwm改为50hz.输入的值为舵机角度,范围0-210度 M3S30 舵机转过30度,
 
 #ifdef DISABLE_74HC595
 #define X_STEP_PORT 5
@@ -183,10 +185,17 @@ decltype(regs) regs_tmp;
 #define Z_DIRECTION_PORT 16
 #endif //DISABLE_74HC595
 
-#ifdef USE_ENABLE_STEPPERS
+#ifdef USE_ENABLE_STEPPERS //步进电机使能
 #define C_STEPPERS_DISABLE_PORT 15
 #endif // USE_ENABLE_STEPPERS
 
+#ifdef USE_ENABLE_SPINDLE  //pwm 使能
+#define C_SPINDLE_PORT 15
+#endif //USE_ENABLE_SPINDLE
+
+#if defined(USE_ENABLE_STEPPERS) && defined(USE_ENABLE_SPINDLE)
+#error "USE_SPINDLE AND USE_ENABLE_STEPPERS Not use at the same time"
+#endif
 
 #endif  //CPU_MAP_ESP8266
 

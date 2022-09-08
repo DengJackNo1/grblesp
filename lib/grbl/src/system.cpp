@@ -376,6 +376,12 @@ uint8_t system_execute_line(char *line, uint8_t client)
 #endif
       }
       break;
+
+#ifdef ENABLE_WIFI
+    case 'W': // Print wifi 配置
+      report_wifi_info(client);
+      break;
+#endif
     case 'R': // Restore defaults [IDLE/ALARM]
       if ((line[2] != 'S') || (line[3] != 'T') || (line[4] != '=') || (line[6] != 0))
       {

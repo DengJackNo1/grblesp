@@ -34,8 +34,8 @@ bool Telnet_Server::begin(){
   if (penabled == 0) return false;
   _telnetServer = new AsyncServer(_port);
   _telnetServer->setNoDelay(true);
-  String s = "[MSG:TELNET Started " + String(_port) + "]\r\n";
-  grbl_send(CLIENT_ALL,(char *)s.c_str());
+  // String s = "[MSG:TELNET Started " + String(_port) + "]\r\n";
+  // grbl_send(CLIENT_ALL,(char *)s.c_str());
 
   //start telnet server
   _telnetServer->onClient(&Telnet_Server::handleNewClient, _telnetServer);
