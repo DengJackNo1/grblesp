@@ -1,3 +1,4 @@
+
 # GRBLESP
 
 Implements the latest version of GRBL using ESP8266 only, being able to connect by serial port, raw socket or websocket. 
@@ -13,6 +14,8 @@ For the raw socket connection, you can use pyserial, which supports it through "
 
 For the websocket connection, the url is: **ws://[IP_OF_ESP_DEVICE]:80/ws**
 
+
+## 我自己使用的修改版
 
 Wiring
 ------
