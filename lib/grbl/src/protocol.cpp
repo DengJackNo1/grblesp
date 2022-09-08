@@ -161,6 +161,7 @@ void protocol_main_loop()
 
     protocol_execute_realtime();  // Runtime command check point.
     if (sys.abort) { return; } // Bail to main() program loop to reset system.
+    wifi_handle();
   }
 
   return; /* Never reached */
