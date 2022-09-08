@@ -1,5 +1,8 @@
 .pioenvs
 .piolibdeps
+.pio
+.vscode
+build_output
 .clang_complete
 .gcc-flags.json
 **/credentials.hpp
