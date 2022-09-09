@@ -135,9 +135,10 @@ void serial_poll_rx()
       }
     }
   }
-// #ifdef ENABLE_WIFI
-//   wifi_handle();
-// #endif
+// 定时器执行wifi
+#ifdef ENABLE_WIFI
+  wifi_handle();
+#endif
 #if (defined ENABLE_WIFI) && (defined ENABLE_WEBSOCKET)
   Serial2Socket.handle_flush();
 #endif

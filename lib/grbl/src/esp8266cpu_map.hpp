@@ -30,7 +30,7 @@ decltype(regs) regs_tmp;
 #define ENABLE_WIFI             // Enables wifi needed for websocket, telnet, etc
 #define ENABLE_WEBSOCKET    // Enables socket serial communication
 #define ENABLE_TELNET           // Enables telnet communication
-#define ENABLE_mDNS           // Enables ESP8266 mDNS
+//#define ENABLE_mDNS           // Enables ESP8266 mDNS
 //#define ENABLE_OTA            // Enables ESP8266 OTA
 
 

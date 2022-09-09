@@ -949,6 +949,11 @@ void report_wifi_info(uint8_t client)
   strcpy(wifi_info, "[ IP:");
   strcat(wifi_info, WiFi.localIP().toString().c_str());
   strcat(wifi_info, "]\r\n");
+#if (defined(ENABLE_mDNS) || defined(ENABLE_OTA))
+  strcat(wifi_info, "[ HOSTNAME:");
+  strcat(wifi_info, WIFI_HOSTNAME);
+  strcat(wifi_info, "]\r\n");
+#endif
 #ifdef ENABLE_TELNET
   strcat(wifi_info, "[ TELNET://IP:23 ]\r\n");
 #endif
@@ -957,6 +962,8 @@ void report_wifi_info(uint8_t client)
   strcat(wifi_info, String(WEBSOCKET_SERVER_PORT).c_str());
   strcat(wifi_info, "/ws ]\r\n");
 #endif
+
+
   grbl_send(client, wifi_info); // ok to send to all
 }
 #endif
