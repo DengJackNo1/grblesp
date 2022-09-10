@@ -167,7 +167,7 @@ decltype(regs) regs_tmp;
 #define DISABLE_74HC595 // not use spi control steeper 74HC595 芯片扩充GPIO
 //#define USE_ENABLE_STEPPERS  //使用gpio15引腳控制电机使能引腳,连接到3个步进电机EN脚
 #define USE_ENABLE_SPINDLE //使用gpio15引腳作为pwm引脚,范围0-1000 M3S500 ,舵机占空比为 500/1000 = 0.5
-#define Servo // 把pwm引脚作为舵机引脚,把pwm改为50hz.输入的值为舵机角度,范围0-210度 M3S30 舵机转过30度,
+//#define Servo // 把pwm引脚作为舵机引脚,把pwm改为50hz.输入的值为舵机角度,范围0-210度 M3S30 舵机转过30度,
 
 
 

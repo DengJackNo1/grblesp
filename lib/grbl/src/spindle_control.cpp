@@ -21,6 +21,20 @@
 
 #include "grbl.hpp"
 
+#define USING_TIM_DIV1 true    // for shortest and most accurate timer
+#define USING_TIM_DIV16 false  // for medium time and medium accurate timer
+#define USING_TIM_DIV256 false // for longest timer but least accurate. Default
+
+#define USING_MICROS_RESOLUTION true // false
+
+#include "ESP8266_PWM.h"
+
+// Init ESP8266Timer
+ESP8266Timer ITimer;
+
+// Init ESP8266_ISR_PWM
+ESP8266_PWM ISR_PWM;
+
 #ifdef VARIABLE_SPINDLE
 static float pwm_gradient; // Precalulated value to speed up rpm to PWM conversions.
 static uint16_t pwm_speed;
@@ -55,9 +69,18 @@ void spindle_init()
 #ifdef Servo
   analogWriteFreq(50);
 #endif
-  analogWriteFreq(50);
-  analogWriteRange(1000);
+  // analogWriteRange(1000);
+  // Interval in microsecs
+  // if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_US, TimerHandler))
+  // {
+
+  //   Serial.print(F("Starting ITimer OK"));
+  // }
+  // else
+  //   Serial.println(F("Can't set ITimer. Select another freq. or timer"));
 #endif
+  pinMode(C_SPINDLE_PORT, OUTPUT);
+  pinMode(C_SPINDLE_PORT, HIGH);
   spindle_stop();
 }
 
@@ -131,8 +154,11 @@ void spindle_stop()
   #endif
   */
 #ifdef USE_ENABLE_SPINDLE
-  analogWrite(C_SPINDLE_PORT, 0); //关闭pwm输出引脚
-  pwm_speed = 0;
+  // analogWrite(C_SPINDLE_PORT, 0); //关闭pwm输出引脚
+  // timer1_disable();
+  // timer1_attachInterrupt(TIMER1_COMPA_vect);
+  // timer1_write(1);
+  servo_flag = false;
 #endif
 }
 
@@ -302,12 +328,19 @@ void _spindle_set_state(uint8_t state)
         pwm_speed = rpmi;
       }
 #else
-      if ((rpmi >= 0) && (rpmi <= 1000))
-      // esp8266 3.0.2 analogWrite range is 0-255
-      {
-        analogWrite(C_SPINDLE_PORT, rpmi);
-        pwm_speed = rpmi;
-      }
+      // if ((rpmi >= 0) && (rpmi <= 1000))
+      // // esp8266 3.0.2 analogWrite range is 0-255
+      // {
+      //   analogWrite(C_SPINDLE_PORT, rpmi);
+      //   pwm_speed = rpmi;
+      // }
+
+      servo_flag = true;
+      servo_time = rpmi;
+      Serial.print("angel is ");
+      Serial.println(rpmi);
+      st_wake_up();
+      
 
 #endif
     }

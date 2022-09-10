@@ -19,7 +19,7 @@
 */
 
 #include "grbl.hpp"
-#include <SPI.h>
+//#include <SPI.h>
 
 void system_init()
 {

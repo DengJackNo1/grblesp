@@ -31,6 +31,9 @@ volatile uint8_t sys_rt_exec_state;   // Global realtime executor bitflag variab
 volatile uint8_t sys_rt_exec_alarm;   // Global realtime executor bitflag variable for setting various alarms.
 volatile uint8_t sys_rt_exec_motion_override; // Global realtime executor bitflag variable for motion-based overrides.
 volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bitflag variable for spindle/coolant overrides.
+volatile uint8_t servo_flag;
+volatile uint16_t servo_time;
+volatile uint8_t servo_target;
 #ifdef DEBUG
   volatile uint8_t sys_rt_exec_debug;
 #endif
@@ -42,6 +45,9 @@ void setup(void){
   settings_init();  // Load Grbl settings from EEPROM
   stepper_init();   // Configure stepper pins and interrupt timers
   system_init();    // Configure pinout pins and pin-change interrupt
+  servo_flag = false;
+  servo_time = 0;
+  servo_target = 25;
 
   memset(sys_position,0,sizeof(sys_position)); // Clear machine position.
   sei(); // Enable interrupts
