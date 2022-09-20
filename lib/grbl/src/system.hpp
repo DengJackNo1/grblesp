@@ -158,7 +158,7 @@ extern volatile uint8_t sys_rt_exec_accessory_override; // Global realtime execu
 
 
 extern volatile uint8_t servo_flag;
-extern volatile uint16_t servo_time;
+extern volatile uint32_t servo_time;
 extern volatile uint8_t servo_target;
 #ifdef DEBUG
   #define EXEC_DEBUG_REPORT  bit(0)

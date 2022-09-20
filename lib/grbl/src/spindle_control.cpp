@@ -27,14 +27,6 @@
 
 #define USING_MICROS_RESOLUTION true // false
 
-#include "ESP8266_PWM.h"
-
-// Init ESP8266Timer
-ESP8266Timer ITimer;
-
-// Init ESP8266_ISR_PWM
-ESP8266_PWM ISR_PWM;
-
 #ifdef VARIABLE_SPINDLE
 static float pwm_gradient; // Precalulated value to speed up rpm to PWM conversions.
 static uint16_t pwm_speed;
@@ -64,23 +56,14 @@ void spindle_init()
   // SPINDLE_DIRECTION_DDR |= (1<<SPINDLE_DIRECTION_BIT); // Configure as output pin.
 
 #endif
-#ifdef USE_ENABLE_SPINDLE //定义舵机使能,并且定义了pwm对应引脚
-// 定时使用舵机,对应频率必须为50hz,跟舵机规格有关
-#ifdef Servo
-  analogWriteFreq(50);
-#endif
-  // analogWriteRange(1000);
-  // Interval in microsecs
-  // if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_US, TimerHandler))
-  // {
 
-  //   Serial.print(F("Starting ITimer OK"));
-  // }
-  // else
-  //   Serial.println(F("Can't set ITimer. Select another freq. or timer"));
+#ifdef USE_ENABLE_SPINDLE
+  if ((settings.flags & BITFLAG_LASER_MODE) || (settings.myflags & BITFLAG_SERVO_MODE))
+  {
+    pinMode(C_SPINDLE_PORT, OUTPUT);
+  }
+
 #endif
-  pinMode(C_SPINDLE_PORT, OUTPUT);
-  pinMode(C_SPINDLE_PORT, HIGH);
   spindle_stop();
 }
 
@@ -153,12 +136,12 @@ void spindle_stop()
     #endif
   #endif
   */
-#ifdef USE_ENABLE_SPINDLE
-  // analogWrite(C_SPINDLE_PORT, 0); //关闭pwm输出引脚
-  // timer1_disable();
-  // timer1_attachInterrupt(TIMER1_COMPA_vect);
-  // timer1_write(1);
-  servo_flag = false;
+#if defined(USE_ENABLE_SPINDLE)
+  digitalWrite(C_SPINDLE_PORT, LOW);
+  if (settings.myflags & BITFLAG_SERVO_MODE)
+  {
+    servo_flag = false;
+  }
 #endif
 }
 
@@ -294,6 +277,9 @@ uint8_t spindle_compute_pwm_value(float rpm) // 328p PWM register is 8-bit.
 // Immediately sets spindle running state with direction and spindle rpm via PWM, if enabled.
 // Called by g-code parser spindle_sync(), parking retract and restore, g-code program end,
 // sleep, and spindle stop override.
+//如果启用，立即通过PWM设置主轴运行状态和方向以及主轴转速。
+//由g代码解析器spindle_sync（）调用，停车收回和恢复，g代码程序结束，
+//睡眠和主轴停止超控。
 #ifdef VARIABLE_SPINDLE
 void spindle_set_state(uint8_t state, float rpm)
 #else
@@ -319,50 +305,42 @@ void _spindle_set_state(uint8_t state)
     // 对应M3命令
     if (state == SPINDLE_ENABLE_CW)
     {
-      int rpmi = int(rpm);
-#ifdef Servo
-      // 0-1000范围,输入进来的是角度,0-210 度,对应占空比13 -136
-      if ((rpmi >= 0) && (rpmi <= 210))
+      if (settings.myflags & BITFLAG_SERVO_MODE)
       {
-        analogWrite(C_SPINDLE_PORT, int(0.56 * rpmi + 13));
-        pwm_speed = rpmi;
+        int rpmi = int(rpm);
+        servo_flag = true; //修改标志位,通过该标志位控制定时器输出PWM波
+        servo_time = rpmi;
+        st_wake_up(); // 启动定时器,通过定时器输出PWM波
       }
-#else
-      // if ((rpmi >= 0) && (rpmi <= 1000))
-      // // esp8266 3.0.2 analogWrite range is 0-255
-      // {
-      //   analogWrite(C_SPINDLE_PORT, rpmi);
-      //   pwm_speed = rpmi;
-      // }
-
-      servo_flag = true;
-      servo_time = rpmi;
-      Serial.print("angel is ");
-      Serial.println(rpmi);
-      st_wake_up();
-      
-
-#endif
+      if (settings.flags & BITFLAG_LASER_MODE)
+      {
+        digitalWrite(C_SPINDLE_PORT, HIGH);
+      }
     }
     else
     // 对应M4命令
     {
+      if (settings.flags & BITFLAG_LASER_MODE)
+      {
+        digitalWrite(C_SPINDLE_PORT, HIGH);
+      }
       // SPINDLE_DIRECTION_PORT |= (1<<SPINDLE_DIRECTION_BIT);
     }
-#endif
-#endif
-
-#ifdef VARIABLE_SPINDLE
+#else
     // NOTE: Assumes all calls to this function is when Grbl is not moving or must remain off.
-    if (settings.flags & BITFLAG_LASER_MODE)
+    // 激光模式开启
+    if (settings.flags & BITFLAG_LASER_MODE) // M4指令开启激光
     {
       if (state == SPINDLE_ENABLE_CCW)
       {
         rpm = 0.0;
-      } // TODO: May need to be rpm_min*(100/MAX_SPINDLE_SPEED_OVERRIDE);
+        pinMode(C_SPINDLE_PORT, HIGH); //将激光模式对应gpio 设置为高电平.打开继电器,控制激光
+      }                                // TODO: May need to be rpm_min*(100/MAX_SPINDLE_SPEED_OVERRIDE);
     }
     spindle_set_speed(spindle_compute_pwm_value(rpm));
 #endif
+#endif
+
 #if (defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) &&        \
      !defined(SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED)) || \
     !defined(VARIABLE_SPINDLE)
@@ -375,7 +353,6 @@ void _spindle_set_state(uint8_t state)
 #endif
 #endif
   }
-
   sys.report_ovr_counter = 0; // Set to report change immediately
 }
 

@@ -275,7 +275,7 @@ void st_go_idle()
   {
     timer1_disable();
     digitalWrite(C_SPINDLE_PORT, LOW);
-    // Serial.println("over");
+    Serial.println("over");
     // Serial.println(C_SPINDLE_PORT);
     servo_flag = false;
   }
@@ -399,13 +399,11 @@ void TIMER1_COMPA_vect(void)
     {
       servo_update_time = 0;
       st_go_idle();
+      //system_set_exec_state_flag(EXEC_CYCLE_STOP); // Flag main program for cycle end
+      return; // Nothing to do but exit.
     }
     digitalWrite(C_SPINDLE_PORT, HIGH);
     timer0_write(ESP.getCycleCount()+ 2000 * servo_time);
-    // Serial.print("timer1   ");
-    // Serial.println(micros());
-    // Serial.print("timer0 as   ");
-    // Serial.println(20 * servo_time);
     timer1_write(100000);
   }
   else
@@ -704,8 +702,8 @@ void TIMER0_OVF_vect(void)
 {
   if (servo_flag)
   {
-    // Serial.print("timer0   ");
-    // Serial.println(micros());
+    Serial.print("timer0   ");
+    Serial.println(micros());
     digitalWrite(C_SPINDLE_PORT, LOW);
     timer0_write(ESP.getCycleCount() - 1);
   }

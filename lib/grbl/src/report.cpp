@@ -294,6 +294,9 @@ void report_grbl_settings(uint8_t client)
 #else
   strcat(rpt, "$32=0\r\n");
 #endif
+  // 是否启用了舵机标志位
+  sprintf(setting, "$33=%d\r\n", bit_istrue(settings.myflags, BITFLAG_SERVO_MODE));
+  strcat(rpt, setting);
 
   // Print axis settings
   uint8_t idx, set_idx;

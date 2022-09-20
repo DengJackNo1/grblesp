@@ -867,6 +867,7 @@ uint8_t gc_execute_line(char *line, uint8_t client)
   }
 
   // If in laser mode, setup laser power based on current and past parser conditions.
+  //如果处于激光模式，则根据当前和过去的解析器条件设置激光功率。
   if (bit_istrue(settings.flags,BITFLAG_LASER_MODE)) {
     if ( !((gc_block.modal.motion == MOTION_MODE_LINEAR) || (gc_block.modal.motion == MOTION_MODE_CW_ARC)
         || (gc_block.modal.motion == MOTION_MODE_CCW_ARC)) ) {
@@ -876,6 +877,9 @@ uint8_t gc_execute_line(char *line, uint8_t client)
     // Any motion mode with axis words is allowed to be passed from a spindle speed update.
     // NOTE: G1 and G0 without axis words sets axis_command to none. G28/30 are intentionally omitted.
     // TODO: Check sync conditions for M3 enabled motions that don't enter the planner. (zero length).
+    //允许从主轴速度更新中传递任何带有轴字的运动模式。
+    //注：没有轴字的G1和G0将轴命令设置为无。G28/30有意省略。
+    //TODO：检查未进入计划器的M3启用运动的同步条件。（零长度）。
     if (axis_words && (axis_command == AXIS_COMMAND_MOTION_MODE)) {
       gc_parser_flags |= GC_PARSER_LASER_ISMOTION;
     } else {

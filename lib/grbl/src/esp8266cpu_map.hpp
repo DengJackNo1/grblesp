@@ -167,7 +167,9 @@ decltype(regs) regs_tmp;
 #define DISABLE_74HC595 // not use spi control steeper 74HC595 芯片扩充GPIO
 //#define USE_ENABLE_STEPPERS  //使用gpio15引腳控制电机使能引腳,连接到3个步进电机EN脚
 #define USE_ENABLE_SPINDLE //使用gpio15引腳作为pwm引脚,范围0-1000 M3S500 ,舵机占空比为 500/1000 = 0.5
-//#define Servo // 把pwm引脚作为舵机引脚,把pwm改为50hz.输入的值为舵机角度,范围0-210度 M3S30 舵机转过30度,
+//$33=1 舵机模式 // 把pwm引脚作为舵机引脚,把pwm改为50hz.输入的值为舵机角度,范围0-210度 M3S30 舵机转过30度
+//由于ESP8266 把2个定时器都用在步进电机控制上,没有定时器用于PWM波的输出.只能通过舵机转角度后上电保持的特点
+//在步进电机停止间隙,把舵机控制到适当的角度
 
 
 
