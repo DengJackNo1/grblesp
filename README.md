@@ -1,6 +1,13 @@
 
 # GRBLESP
+# GRBLESP 修改版
 
+只用esp8266 本身的引脚,驱动3个dir/step的步进电机,支持驱动使能能,支持舵机/PWM
+支持连接WIFI,通过$W 获取wifi信息和端口
+  telnet://[IP_OF_ESP_DEVICE]:23
+  ws://[IP_OF_ESP_DEVICE]:80/ws
+  串口
+3种方式执行gcode代码
 Implements the latest version of GRBL using ESP8266 only, being able to connect by serial port, raw socket or websocket. 
 To overcome the problem of the lack of pins, it uses SPI to drive 4 shift registers of 8 bits each. The aim of having
 32 pins is to be able to handle up to 8 axis.

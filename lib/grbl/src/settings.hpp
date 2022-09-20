@@ -40,13 +40,37 @@
 #define BIT_INVERT_PROBE_PIN   7
 
 #define BITFLAG_REPORT_INCHES      bit(BIT_REPORT_INCHES)
-#define BITFLAG_LASER_MODE         bit(BIT_LASER_MODE)
+#define BITFLAG_LASER_MODE         bit(BIT_LASER_MODE)  //激光模式
 #define BITFLAG_INVERT_ST_ENABLE   bit(BIT_INVERT_ST_ENABLE)
 #define BITFLAG_HARD_LIMIT_ENABLE  bit(BIT_HARD_LIMIT_ENABLE)
 #define BITFLAG_HOMING_ENABLE      bit(BIT_HOMING_ENABLE)
 #define BITFLAG_SOFT_LIMIT_ENABLE  bit(BIT_SOFT_LIMIT_ENABLE)
 #define BITFLAG_INVERT_LIMIT_PINS  bit(BIT_INVERT_LIMIT_PINS)
 #define BITFLAG_INVERT_PROBE_PIN   bit(BIT_INVERT_PROBE_PIN)
+
+// My Custom flag for the boolean settings in settings.myflag.
+
+
+#define BIT_SERVO_MODE      0
+#define BIT_FLAG_1          1
+#define BIT_FLAG_2          2
+#define BIT_FLAG_3          3
+#define BIT_FLAG_4          4
+#define BIT_FLAG_5          5
+#define BIT_FLAG_6          6
+#define BIT_FLAG_7          7
+
+
+#define BITFLAG_SERVO_MODE         bit(BIT_SERVO_MODE)
+#define BITFLAG_1                  bit(BIT_FLAG_1)
+#define BITFLAG_2                  bit(BIT_FLAG_2)
+#define BITFLAG_3                  bit(BIT_FLAG_3)
+#define BITFLAG_4                  bit(BIT_FLAG_4)
+#define BITFLAG_5                  bit(BIT_FLAG_5)
+#define BITFLAG_6                  bit(BIT_FLAG_6)
+#define BITFLAG_7                  bit(BIT_FLAG_7)
+
+
 
 // Define status reporting boolean enable bit flags in settings.status_report_mask
 #define BITFLAG_RT_STATUS_POSITION_TYPE     bit(0)
@@ -104,7 +128,7 @@ typedef struct {
   float rpm_min;
 
   uint8_t flags;  // Contains default boolean settings
-
+  uint8_t myflags;  // my custom  default boolean settings
   uint8_t homing_dir_mask;
   float homing_feed_rate;
   float homing_seek_rate;

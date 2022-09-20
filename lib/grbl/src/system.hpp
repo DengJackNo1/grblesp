@@ -156,6 +156,10 @@ extern volatile uint8_t sys_rt_exec_alarm;   // Global realtime executor bitflag
 extern volatile uint8_t sys_rt_exec_motion_override; // Global realtime executor bitflag variable for motion-based overrides.
 extern volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bitflag variable for spindle/coolant overrides.
 
+
+extern volatile uint8_t servo_flag;
+extern volatile uint32_t servo_time;
+extern volatile uint8_t servo_target;
 #ifdef DEBUG
   #define EXEC_DEBUG_REPORT  bit(0)
   extern volatile uint8_t sys_rt_exec_debug;

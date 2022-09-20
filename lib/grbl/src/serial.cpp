@@ -49,6 +49,15 @@ void serial_init()
   serial_poll_task.attach_ms(100, serial_poll_rx);
 }
 
+#define GRBL_MSG_LEVEL1 4
+void serial_print(const char *msg)
+{
+  if (GRBL_MSG_LEVEL1 == 4)
+  {
+    Serial.println(msg);
+  }
+}
+
 void serial_poll_rx()
 {
   uint8_t data = 0;
@@ -135,6 +144,7 @@ void serial_poll_rx()
       }
     }
   }
+// 定时器执行wifi
 #ifdef ENABLE_WIFI
   wifi_handle();
 #endif

@@ -9,6 +9,7 @@
 #include "grbl.hpp"
 
 void wifi_init();
-void wifi_handle();
+void wifi_handle();  //放在定时器中执行,arduino ota 在定时器中不起作用
+void wifi_loop();   //放在loop中执行
 
 #endif
