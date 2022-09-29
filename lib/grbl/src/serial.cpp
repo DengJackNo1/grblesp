@@ -46,15 +46,41 @@ void serial_init()
   Serial.begin(BAUD_RATE);
 
   Serial.setDebugOutput(false);
-  serial_poll_task.attach_ms(100, serial_poll_rx);
+  Serial.setTimeout(10);
+  serial_poll_task.attach_ms(33, serial_poll_rx);
 }
 
-#define GRBL_MSG_LEVEL1 4
-void serial_print(const char *msg)
+// Writes one byte to the TX serial buffer. Called by main program.
+void serial_write(uint8_t data) {
+
+  // Wait until there is space in the buffer
+  while (!Serial.availableForWrite()) {
+    // TODO: Restructure st_prep_buffer() calls to be executed here during a long print.
+    if (sys_rt_exec_state & EXEC_RESET) { return; } // Only check for abort to avoid an endless loop.
+  }
+
+  Serial.write((char)data);
+}
+
+// Fetches the first byte in the serial read buffer. Called by main program.
+uint8_t serial_read(uint8_t client)
 {
-  if (GRBL_MSG_LEVEL1 == 4)
-  {
-    Serial.println(msg);
+  uint8_t client_idx = client - 1;
+
+  uint8_t tail = serial_rx_buffer_tail[client_idx]; // Temporary serial_rx_buffer_tail (to optimize for volatile)
+  if (serial_rx_buffer_head[client_idx] == tail) {
+    return SERIAL_NO_DATA;
+  } else {
+    // enter mutex
+    cli();
+    uint8_t data = serial_rx_buffer[client_idx][tail];
+
+    tail++;
+    if (tail == RX_RING_BUFFER) { tail = 0; }
+    serial_rx_buffer_tail[client_idx] = tail;
+    // exit mutex
+    sei();
+    return data;
   }
 }
 

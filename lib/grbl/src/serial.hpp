@@ -38,7 +38,6 @@
 void serial_init();
 
 
-void serial_print(const char *msg);
 // Writes one byte to the TX serial buffer. Called by main program.
 void serial_write(uint8_t data);
 
