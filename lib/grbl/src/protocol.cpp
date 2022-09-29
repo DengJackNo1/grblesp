@@ -76,7 +76,6 @@ void protocol_main_loop()
   uint8_t c;
   for (;;)
   {
-    delay(0);
     // Process one line of incoming serial data, as the data becomes available. Performs an
     // initial filtering by removing spaces and comments and capitalizing all letters.
     uint8_t client = CLIENT_SERIAL;
@@ -84,8 +83,6 @@ void protocol_main_loop()
     {
       while ((c = serial_read(client)) != SERIAL_NO_DATA)
       {
-        /// ESP.wdtFeed();
-        delay(0);
         if ((c == '\n') || (c == '\r'))
         {                              // End of line reached
           protocol_execute_realtime(); // Runtime command check point.
@@ -191,6 +188,7 @@ void protocol_main_loop()
             }
           }
         }
+        delay(0);
       }
     }
 
@@ -204,8 +202,9 @@ void protocol_main_loop()
     {
       return;
     } // Bail to main() program loop to reset system.
-// 定时器执行wifi
-#ifdef ENABLE_WIFI
+    delay(0);
+
+#ifdef ENABLE_WIFI  // 定时器执行wifi
     wifi_loop();
 #endif
   }
@@ -221,13 +220,12 @@ void protocol_buffer_synchronize()
   protocol_auto_cycle_start();
   do
   {
-    /// ESP.wdtFeed();
-    delay(0);
     protocol_execute_realtime(); // Check and execute run-time commands
     if (sys.abort)
     {
       return;
     } // Check for system abort
+    delay(0);
   } while (plan_get_current_block() || (sys.state == STATE_CYCLE));
 }
 
@@ -286,7 +284,6 @@ void protocol_exec_rt_system()
       system_clear_exec_state_flag(EXEC_RESET); // Disable any existing reset
       do
       {
-        /// ESP.wdtFeed();
         delay(0);
         // Block everything, except reset and status reports, until user issues reset or power
         // cycles. Hard limits typically occur while unattended or not paying attention. Gives
@@ -749,7 +746,6 @@ static void protocol_exec_rt_suspend()
 
   while (sys.suspend)
   {
-    delay(0);
     if (sys.abort)
     {
       return;
@@ -849,8 +845,8 @@ static void protocol_exec_rt_suspend()
             st_go_idle();                            // Disable steppers
             while (!(sys.abort))
             {
-              delay(0);
               protocol_exec_rt_system();
+              delay(0);
             }       // Do nothing until reset.
             return; // Abort received. Return to re-initialize.
           }
@@ -1006,5 +1002,6 @@ static void protocol_exec_rt_suspend()
     }
 
     protocol_exec_rt_system();
+    delay(0);
   }
 }

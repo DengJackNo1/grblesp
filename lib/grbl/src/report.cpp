@@ -365,7 +365,6 @@ void report_ngc_parameters(uint8_t client)
   ngc_rpt[0] = '\0';
   for (coord_select = 0; coord_select <= SETTING_INDEX_NCOORD; coord_select++)
   {
-    /// ESP.wdtFeed();
     /// delay(0);
     if (!(settings_read_coord_data(coord_select, coord_data)))
     {

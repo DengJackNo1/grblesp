@@ -240,6 +240,7 @@ uint8_t gc_execute_line(char *line, uint8_t client)
         break;
 
       case 'M':
+      
         // Determine 'M' command and its modal group
         if (mantissa > 0) { FAIL(STATUS_GCODE_COMMAND_VALUE_NOT_INTEGER); } // [No Mxx.x commands]
         switch(int_value) {

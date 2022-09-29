@@ -1174,8 +1174,6 @@ void st_prep_buffer()
 
     do
     {
-      // ESP.wdtFeed();
-      // delay(0);
       switch (prep.ramp_type)
       {
       case RAMP_DECEL_OVERRIDE:
